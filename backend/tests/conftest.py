@@ -41,6 +41,121 @@ def create_tool_use_response(
     return response
 
 
+# --- API Testing Fixtures ---
+
+@pytest.fixture
+def mock_rag_system():
+    """Mock RAGSystem for API tests."""
+    rag = MagicMock()
+    rag.query.return_value = (
+        "This is a test answer about the course.",
+        [{"text": "Test Course - Lesson 1", "url": "https://example.com/lesson1"}]
+    )
+    rag.get_course_analytics.return_value = {
+        "total_courses": 3,
+        "course_titles": ["Python Basics", "Machine Learning", "Web Development"]
+    }
+    rag.session_manager.create_session.return_value = "test-session-123"
+    return rag
+
+
+@pytest.fixture
+def test_app(mock_rag_system):
+    """Create a test FastAPI app without static file mounting."""
+    from fastapi import FastAPI, HTTPException
+    from fastapi.middleware.cors import CORSMiddleware
+    from pydantic import BaseModel
+    from typing import List, Optional
+
+    # Create a minimal test app with just the API endpoints
+    app = FastAPI(title="Course Materials RAG System - Test")
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Pydantic models (matching app.py)
+    class QueryRequest(BaseModel):
+        query: str
+        session_id: Optional[str] = None
+
+    class Source(BaseModel):
+        text: str
+        url: Optional[str] = None
+
+    class QueryResponse(BaseModel):
+        answer: str
+        sources: List[Source]
+        session_id: str
+
+    class CourseStats(BaseModel):
+        total_courses: int
+        course_titles: List[str]
+
+    # Store the mock so tests can access it
+    app.state.rag_system = mock_rag_system
+
+    @app.post("/api/query", response_model=QueryResponse)
+    async def query_documents(request: QueryRequest):
+        try:
+            session_id = request.session_id
+            if not session_id:
+                session_id = mock_rag_system.session_manager.create_session()
+
+            answer, sources = mock_rag_system.query(request.query, session_id)
+
+            return QueryResponse(
+                answer=answer,
+                sources=sources,
+                session_id=session_id
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/api/courses", response_model=CourseStats)
+    async def get_course_stats():
+        try:
+            analytics = mock_rag_system.get_course_analytics()
+            return CourseStats(
+                total_courses=analytics["total_courses"],
+                course_titles=analytics["course_titles"]
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/")
+    async def root():
+        return {"status": "ok", "message": "Course Materials RAG System"}
+
+    return app
+
+
+@pytest.fixture
+def client(test_app):
+    """FastAPI TestClient for API testing."""
+    from fastapi.testclient import TestClient
+    return TestClient(test_app)
+
+
+@pytest.fixture
+def sample_query_request():
+    """Sample query request data."""
+    return {"query": "What is machine learning?"}
+
+
+@pytest.fixture
+def sample_query_request_with_session():
+    """Sample query request with session ID."""
+    return {
+        "query": "Tell me more about neural networks",
+        "session_id": "existing-session-456"
+    }
+
+
 # --- Fixtures ---
 
 

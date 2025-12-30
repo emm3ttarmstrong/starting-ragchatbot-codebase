@@ -26,7 +26,18 @@ dev = [
 testpaths = ["backend/tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
+python_classes = ["Test*"]
 addopts = "-v --tb=short"
+markers = [
+    "api: marks tests as API endpoint tests",
+    "unit: marks tests as unit tests",
+    "integration: marks tests as integration tests",
+    "slow: marks tests as slow running",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]
 
 [tool.black]
 line-length = 88
