@@ -111,6 +111,40 @@ header h1 {
     margin-bottom: 0;
 }
 
+/* New Chat Button - Secondary Style */
+.new-chat-button {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--surface);
+    border: 1px solid var(--primary-color);
+    border-radius: 24px;
+    cursor: pointer;
+    padding: 0.75rem 1.25rem;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s ease;
+    margin-bottom: 1rem;
+}
+
+.new-chat-button:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.new-chat-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.new-chat-button:active {
+    transform: translateY(0);
+}
+
 /* Main Chat Area */
 .chat-main {
     flex: 1;
@@ -241,8 +275,34 @@ header h1 {
 }
 
 .sources-content {
-    padding: 0 0.5rem 0.25rem 1.5rem;
-    color: var(--text-secondary);
+    padding: 0.5rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sources-content a,
+.sources-content span {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.sources-content a:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.sources-content a:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--focus-ring);
 }
 
 /* Markdown formatting styles */
