@@ -1,7 +1,9 @@
 """Shared fixtures and mocks for RAG chatbot tests."""
+
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
 import pytest
 
 # Add backend to path for imports
@@ -10,8 +12,8 @@ sys.path.insert(0, str(backend_path))
 
 from vector_store import SearchResults
 
-
 # --- Helper functions for creating mock responses ---
+
 
 def create_text_response(text: str):
     """Create mock Anthropic response with text content."""
@@ -24,7 +26,9 @@ def create_text_response(text: str):
     return response
 
 
-def create_tool_use_response(tool_name: str, tool_input: dict, tool_id: str = "tool_123"):
+def create_tool_use_response(
+    tool_name: str, tool_input: dict, tool_id: str = "tool_123"
+):
     """Create mock Anthropic response with tool_use content."""
     response = MagicMock()
     response.stop_reason = "tool_use"
@@ -39,24 +43,21 @@ def create_tool_use_response(tool_name: str, tool_input: dict, tool_id: str = "t
 
 # --- Fixtures ---
 
+
 @pytest.fixture
 def sample_search_results():
     """Pre-built SearchResults for various test scenarios."""
     return SearchResults(
         documents=["This is lesson content about machine learning."],
         metadata=[{"course_title": "AI Course", "lesson_number": 1, "chunk_index": 0}],
-        distances=[0.5]
+        distances=[0.5],
     )
 
 
 @pytest.fixture
 def empty_search_results():
     """Empty SearchResults for no matches."""
-    return SearchResults(
-        documents=[],
-        metadata=[],
-        distances=[]
-    )
+    return SearchResults(documents=[], metadata=[], distances=[])
 
 
 @pytest.fixture
@@ -80,9 +81,9 @@ def mock_chroma_collection():
     """Mock ChromaDB collection for VectorStore tests."""
     collection = MagicMock()
     collection.query.return_value = {
-        'documents': [['Content chunk 1']],
-        'metadatas': [[{'course_title': 'Test Course', 'lesson_number': 1}]],
-        'distances': [[0.5]]
+        "documents": [["Content chunk 1"]],
+        "metadatas": [[{"course_title": "Test Course", "lesson_number": 1}]],
+        "distances": [[0.5]],
     }
     return collection
 
@@ -107,5 +108,7 @@ def mock_tool_manager():
     """Mock ToolManager for AIGenerator tests."""
     manager = MagicMock()
     manager.execute_tool.return_value = "Tool result: Found relevant content"
-    manager.get_last_sources.return_value = [{"text": "AI Course - Lesson 1", "url": "https://example.com"}]
+    manager.get_last_sources.return_value = [
+        {"text": "AI Course - Lesson 1", "url": "https://example.com"}
+    ]
     return manager

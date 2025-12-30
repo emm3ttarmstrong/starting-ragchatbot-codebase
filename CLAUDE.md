@@ -24,6 +24,17 @@ uv sync
 
 The app runs at http://localhost:8000 with API docs at http://localhost:8000/docs
 
+### Code quality checks
+```bash
+# Check formatting and linting (no changes made)
+./lint.sh check
+
+# Auto-fix formatting issues
+./lint.sh fix
+```
+
+Tools used: black (formatting), isort (import sorting), flake8 (linting)
+
 ## Architecture
 
 ### Query Flow

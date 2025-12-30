@@ -1,4 +1,5 @@
 """Helper functions for tests."""
+
 from unittest.mock import MagicMock
 
 
@@ -13,7 +14,9 @@ def create_text_response(text: str):
     return response
 
 
-def create_tool_use_response(tool_name: str, tool_input: dict, tool_id: str = "tool_123"):
+def create_tool_use_response(
+    tool_name: str, tool_input: dict, tool_id: str = "tool_123"
+):
     """Create mock Anthropic response with tool_use content."""
     response = MagicMock()
     response.stop_reason = "tool_use"

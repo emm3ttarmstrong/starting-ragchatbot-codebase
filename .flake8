@@ -1,0 +1,18 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203, W503, E501
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    build,
+    dist,
+    .eggs
+
+# E402: module level import not at top of file (needed for dotenv pattern)
+# E501: line too long (handled by black, but some comments/strings exceed)
+# F811: redefinition of unused name (needed for conditional imports in app.py)
+# F841: local variable assigned but never used (needed for test fixtures)
+per-file-ignores =
+    backend/app.py: E402, F811, F401
+    backend/tests/*.py: E402, F401, F841

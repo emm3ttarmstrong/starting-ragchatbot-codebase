@@ -1,14 +1,16 @@
 """Tests for CourseSearchTool and ToolManager."""
+
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock
+
 import pytest
 
 # Add backend to path
 backend_path = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_path))
 
-from search_tools import CourseSearchTool, CourseOutlineTool, ToolManager
+from search_tools import CourseOutlineTool, CourseSearchTool, ToolManager
 from vector_store import SearchResults
 
 
@@ -25,9 +27,7 @@ class TestCourseSearchToolExecute:
         assert "AI Course" in result
         assert "Lesson 1" in result
         mock_vector_store.search.assert_called_once_with(
-            query="machine learning",
-            course_name=None,
-            lesson_number=None
+            query="machine learning", course_name=None, lesson_number=None
         )
 
     def test_execute_empty_results(self, mock_vector_store, empty_search_results):
@@ -39,7 +39,9 @@ class TestCourseSearchToolExecute:
 
         assert "No relevant content found" in result
 
-    def test_execute_empty_results_with_course_filter(self, mock_vector_store, empty_search_results):
+    def test_execute_empty_results_with_course_filter(
+        self, mock_vector_store, empty_search_results
+    ):
         """Test execute message includes course filter info for empty results."""
         mock_vector_store.search.return_value = empty_search_results
 
@@ -49,7 +51,9 @@ class TestCourseSearchToolExecute:
         assert "No relevant content found" in result
         assert "AI Course" in result
 
-    def test_execute_empty_results_with_lesson_filter(self, mock_vector_store, empty_search_results):
+    def test_execute_empty_results_with_lesson_filter(
+        self, mock_vector_store, empty_search_results
+    ):
         """Test execute message includes lesson filter info for empty results."""
         mock_vector_store.search.return_value = empty_search_results
 
@@ -76,9 +80,7 @@ class TestCourseSearchToolExecute:
         tool.execute(query="test", course_name="AI Course")
 
         mock_vector_store.search.assert_called_once_with(
-            query="test",
-            course_name="AI Course",
-            lesson_number=None
+            query="test", course_name="AI Course", lesson_number=None
         )
 
     def test_execute_with_lesson_filter(self, mock_vector_store, sample_search_results):
@@ -89,9 +91,7 @@ class TestCourseSearchToolExecute:
         tool.execute(query="test", lesson_number=3)
 
         mock_vector_store.search.assert_called_once_with(
-            query="test",
-            course_name=None,
-            lesson_number=3
+            query="test", course_name=None, lesson_number=3
         )
 
     def test_execute_with_both_filters(self, mock_vector_store, sample_search_results):
@@ -102,16 +102,16 @@ class TestCourseSearchToolExecute:
         tool.execute(query="test", course_name="AI Course", lesson_number=2)
 
         mock_vector_store.search.assert_called_once_with(
-            query="test",
-            course_name="AI Course",
-            lesson_number=2
+            query="test", course_name="AI Course", lesson_number=2
         )
 
 
 class TestCourseSearchToolFormatResults:
     """Tests for CourseSearchTool._format_results and source tracking."""
 
-    def test_format_results_tracks_sources(self, mock_vector_store, sample_search_results):
+    def test_format_results_tracks_sources(
+        self, mock_vector_store, sample_search_results
+    ):
         """Test that last_sources is populated after formatting results."""
         mock_vector_store.search.return_value = sample_search_results
         mock_vector_store.get_lesson_link.return_value = "https://example.com/lesson1"
@@ -129,9 +129,9 @@ class TestCourseSearchToolFormatResults:
             documents=["Content 1", "Content 2"],
             metadata=[
                 {"course_title": "Course A", "lesson_number": 1},
-                {"course_title": "Course A", "lesson_number": 2}
+                {"course_title": "Course A", "lesson_number": 2},
             ],
-            distances=[0.3, 0.4]
+            distances=[0.3, 0.4],
         )
         mock_vector_store.search.return_value = multi_results
         mock_vector_store.get_lesson_link.return_value = None
