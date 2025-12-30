@@ -288,10 +288,21 @@ header h1 {
     background: var(--background);
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    color: var(--text-primary);
     font-size: 0.8rem;
-    text-decoration: none;
     transition: all 0.2s ease;
+}
+
+/* Links: underlined with primary color for clear affordance */
+.sources-content a {
+    color: var(--primary-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* Non-link spans: regular text color, no underline */
+.sources-content span {
+    color: var(--text-primary);
+    text-decoration: none;
 }
 
 .sources-content a:hover {
